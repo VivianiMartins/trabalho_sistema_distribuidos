@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # 1. Banco de Dados
+  db:
+    image: postgres:15
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: sistema_auth
+    volumes:
+      # Executa o script SQL automaticamente na primeira vez
+      - ./src/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - rmi-network
+
+  # 2. Servidor RMI
+  server:
+    build: .
+    container_name: rmi_server_container
+    depends_on:
+      - db
+    ports:
+      - "1099:1099"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/sistema_auth
+      - RMI_HOSTNAME=server
+    command: java -jar app.jar com.exemplo.ServidorMain
+    networks:
+      - rmi-network
+
+  # 3. Cliente RMI
+  client:
+    build: .
+    container_name: rmi_client_container
+    depends_on:
+      - server
+    environment:
+      - SERVER_HOST=server
+    # Comando para rodar a classe Main do cliente
+    command: sh -c "sleep 5 && java -cp app.jar com.exemplo.ClienteMain"
+    networks:
+      - rmi-network
+
+networks:
+  rmi-network:
+    driver: bridge
