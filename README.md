@@ -85,6 +85,8 @@ Para ver a comunicação distribuída acontecendo (as requisições saindo do cl
 
 ```bash
 docker compose logs -f server
+```
+
 ---
 
 ## 🧹 Comandos Úteis (Manutenção)
