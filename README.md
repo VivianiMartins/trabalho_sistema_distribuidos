@@ -71,8 +71,6 @@ A maioria dos sistemas modernos (Android recente, iOS, Windows, Linux) suporta o
     * Digite: `http://NOME-DO-PC.local:8080`
     * *Exemplo:* `http://meu-notebook.local:8080`
 
----
-
 #### Opção 2: Pelo Endereço IP (Infalível)
 Se o método do nome não funcionar, use o endereço numérico direto.
 
