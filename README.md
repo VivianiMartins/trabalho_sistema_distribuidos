@@ -3,21 +3,21 @@
 
 Este projeto implementa um serviço distribuído de autenticação de usuários utilizando **Java RMI (Remote Method Invocation)**. A arquitetura separa a aplicação em microsserviços containerizados (Cliente Web, Servidor de Negócios e Banco de Dados).
 
-### 🎯 Objetivos
+### Objetivos
 * **Objetivo Geral:** Criar um serviço distribuído de autenticação.
 * **Objetivo Específico:** Aplicar conceitos de comunicação distribuída e serviços de nomes.
 * **Atividades:** Implementar servidor RMI para cadastro e login, clientes que acessam remotamente os métodos, e persistência em banco de dados.
 
-### 🛠️ Recursos Utilizados
+###  Recursos Utilizados
 * **Linguagem:** Java 17+ (RMI)
 * **Gerenciamento de Build:** Maven (Standard Directory Layout)
 * **Banco de Dados:** PostgreSQL 15
-* **Interface:** HTML5 + Bootstrap 5 (Responsivo)
+* **Interface:** HTML5 + Bootstrap 5
 * **Containerização:** Docker & Docker Compose
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 Siga exatamente estes passos no terminal (na pasta raiz do projeto):
 
@@ -38,13 +38,13 @@ docker compose up --build
 ```
 
 **O que você verá no console:**
-* 🐘 **Postgres:** Inicializa e cria a tabela `usuarios` (script `init.sql`).
-* ⚙️ **Servidor RMI:** Aguarda o banco iniciar e exibe: `>>> Servidor RMI pronto...`.
-* 🌐 **Cliente Web:** Aguarda o servidor e exibe: `>>> Servidor Web (Http.cat Edition) rodando...`.
+*  **Postgres:** Inicializa e cria a tabela `usuarios` (script `init.sql`).
+*  **Servidor RMI:** Aguarda o banco iniciar e exibe: `>>> Servidor RMI pronto...`.
+*  **Cliente Web:** Aguarda o servidor e exibe: `>>> Servidor Web (Http.cat Edition) rodando...`.
 
 ---
 
-## 🌐 Testando como Sistema Distribuído
+##  Testando como Sistema Distribuído
 
 Para validar que o sistema suporta múltiplos acessos simultâneos e funciona em rede (concorrência), utilize os cenários abaixo:
 
@@ -56,26 +56,78 @@ Simule usuários diferentes na mesma máquina:
 
 > **Resultado:** Você pode logar com contas diferentes em cada janela sem interferência.
 
-### Cenário B: Acesso via Celular (Wi-Fi) 📱
-Este teste demonstra o acesso remoto real através da rede local (simulando a internet).
+### Cenário B: Acesso via Wi-Fi (Celular ou Outro PC) 📱
+Este teste demonstra o sistema distribuído funcionando na rede local real. O celular atuará como o cliente remoto consumindo a API.
 
-1.  **Descubra seu IP Local no computador:**
-    * **Linux/Mac:** Digite `ip addr` no terminal (procure o IP da interface Wi-Fi, ex: `192.168.0.15`).
-    * **Windows:** Digite `ipconfig` no CMD.
-2.  **Libere a Porta (Se necessário no Linux):**
-    ```bash
-    sudo firewall-cmd --add-port=8080/tcp --temporary
-    ```
-3.  **Acesse pelo Celular:**
-    * Conecte o celular no **mesmo Wi-Fi** do computador.
-    * Abra o navegador do celular.
-    * Digite: `http://SEU_IP_DO_COMPUTADOR:8080` (Ex: `http://192.168.0.15:8080`).
+> **⚠️ Pré-requisito Obrigatório:** O computador e o celular devem estar conectados na **mesma rede Wi-Fi**.
 
-> **Dica:** Tente errar a senha propositalmente para ver as reações dos gatinhos HTTP (401 Unauthorized, 409 Conflict, etc)! 🐱
+#### Opção 1: Pelo Nome do Computador (Mais Fácil)
+A maioria dos sistemas modernos (Android recente, iOS, Windows, Linux) suporta o protocolo mDNS (`.local`).
+
+1.  **Descubra o nome do computador:**
+    * **Linux/Mac:** Digite `hostname` no terminal.
+    * **Windows:** Digite `hostname` no CMD.
+2.  **Acesse no celular:**
+    * Digite: `http://NOME-DO-PC.local:8080`
+    * *Exemplo:* `http://meu-notebook.local:8080`
 
 ---
 
-## 🕵️‍♂️ Monitorando o RMI em Tempo Real
+#### Opção 2: Pelo Endereço IP (Infalível)
+Se o método do nome não funcionar, use o endereço numérico direto.
+
+**🐧 Para Linux**
+
+1.  **Descubra o IP:**
+    Digite o comando abaixo e pegue o primeiro número que aparecer (ignore IPs começando com `172.` ou `127.`):
+    ```bash
+    hostname -I
+    ```
+    *(Exemplo de retorno: `192.168.0.15 ...` -> Use o **192.168.0.15**)*
+
+2.  **Libere a porta no Firewall:**
+    O Linux costuma bloquear conexões externas por padrão. Rode o comando referente à sua distribuição:
+
+    * **Fedora/CentOS/RHEL (Firewalld):**
+        ```bash
+        sudo firewall-cmd --add-port=8080/tcp
+        ```
+    * **Ubuntu/Debian/Mint (UFW):**
+        ```bash
+        sudo ufw allow 8080/tcp
+        ```
+
+3.  **Acesse no celular:** `http://SEU_IP_LINUX:8080`
+
+**🪟 Para Windows**
+
+1.  **Descubra o IP:**
+    * Abra o **Prompt de Comando (CMD)**.
+    * Digite `ipconfig`.
+    * Procure pelo bloco **"Adaptador de Rede Sem Fio Wi-Fi"**.
+    * Copie o **"Endereço IPv4"** (Ex: `192.168.0.25`).
+
+2.  **Firewall:**
+    * Geralmente, ao iniciar o servidor Java pela primeira vez, o Windows abre uma janela pop-up. Certifique-se de marcar as caixas para permitir acesso em **Redes Privadas**.
+    * Se não conectar, desative temporariamente o Firewall do Windows para testar.
+
+3.  **Acesse no celular:** `http://SEU_IP_WINDOWS:8080`
+
+
+> **Dica:** Tente errar a senha propositalmente para ver as reações dos gatinhos HTTP (401 Unauthorized, 409 Conflict, etc)! 🐱
+
+
+#### Solução de Problemas (Troubleshooting)
+
+* **Não conecta de jeito nenhum?**
+  Verifique se você está em uma rede pública (Faculdade/Café). Essas redes costumam ter "Isolamento de AP", que impede dispositivos de conversarem entre si.
+    * *Solução:* Use o Roteador de casa ou faça o Roteamento Wi-Fi (Hotspot) do seu celular e conecte o notebook nele.
+* **O Site carrega mas dá erro?**
+  Se o site abrir mas der erro ao logar, verifique os logs do servidor (`docker compose logs -f server`) para ver se a requisição chegou.
+
+---
+
+## Monitorando o RMI em Tempo Real
 
 Para ver a comunicação distribuída acontecendo (as requisições saindo do cliente e chegando no servidor), você pode acompanhar os logs do container:
 
@@ -89,7 +141,7 @@ docker compose logs -f server
 
 ---
 
-## 🧹 Comandos Úteis (Manutenção)
+## Comandos Úteis (Manutenção)
 
 ### Parar o Sistema
 Para desligar os containers sem perder os dados do banco:
@@ -119,12 +171,12 @@ docker compose up --build
 
 ---
 
-## 🗄️ Acesso ao Banco de Dados (IDE)
+## Acesso ao Banco de Dados (IDE)
 Para visualizar os dados cadastrados via IntelliJ (DataGrip) ou DBeaver:
 
 * Host: localhost
 
-* Port: 5432 (ou 5433 se você alterou no docker-compose)
+* Port: 5433 (ou 5433 se você alterou no docker-compose)
 
 * User: admin
 
@@ -132,7 +184,9 @@ Para visualizar os dados cadastrados via IntelliJ (DataGrip) ou DBeaver:
 
 * Database: sistema_auth (Selecione este banco especificamente na sua IDE)
 
-## 📋 Estrutura do Projeto
+---
+
+## Estrutura do Projeto
 * ```src/main/java```: Código fonte Java (Cliente, Servidor, Interfaces).
 
 * ```src/scripts/init.sql```: Script SQL executado automaticamente na criação do banco.
