@@ -56,7 +56,7 @@ Simule usuários diferentes na mesma máquina:
 
 > **Resultado:** Você pode logar com contas diferentes em cada janela sem interferência.
 
-### Cenário B: Acesso via Wi-Fi (Celular ou Outro PC) 📱
+### Cenário B: Acesso via Wi-Fi (Celular ou Outro PC)
 Este teste demonstra o sistema distribuído funcionando na rede local real. O celular atuará como o cliente remoto consumindo a API.
 
 > **⚠️ Pré-requisito Obrigatório:** O computador e o celular devem estar conectados na **mesma rede Wi-Fi**.
